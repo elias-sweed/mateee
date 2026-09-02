@@ -63,6 +63,27 @@
             backdrop-filter: blur(12px);
         }
 
+        /* Estilos para la insignia / Logo */
+        .school-logo {
+            max-height: 90px;
+            width: auto;
+            filter: drop-shadow(0 0 12px var(--neon-cyan));
+            margin: 0 auto 15px;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .school-logo:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 18px var(--neon-yellow));
+        }
+
+        .hud-logo {
+            max-height: 38px;
+            width: auto;
+            filter: drop-shadow(0 0 6px var(--neon-cyan));
+        }
+
         /* HUD Header */
         .hud-header {
             display: flex;
@@ -73,6 +94,12 @@
             margin-bottom: 20px;
             flex-wrap: wrap;
             gap: 10px;
+        }
+
+        .hud-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .hud-title {
@@ -120,7 +147,7 @@
         h1, h2 {
             font-family: 'Orbitron', sans-serif;
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             text-shadow: 0 0 12px var(--neon-magenta);
             color: #fff;
         }
@@ -280,8 +307,8 @@
 
         /* Reward Screen */
         .reward-badge {
-            width: 110px;
-            height: 110px;
+            width: 100px;
+            height: 100px;
             margin: 0 auto 15px;
             background: radial-gradient(circle, var(--neon-yellow) 0%, transparent 70%);
             border: 3px solid var(--neon-yellow);
@@ -329,7 +356,10 @@
 <div class="game-container">
     <!-- HUD -->
     <div class="hud-header">
-        <div class="hud-title">CYBER-DÍPTICO v3.0</div>
+        <div class="hud-brand">
+            <img src="logo.png" alt="Insignia Colegio" class="hud-logo">
+            <div class="hud-title">CYBER-DÍPTICO v3.0</div>
+        </div>
         <div class="hud-stats">
             <div class="stat-box">PUNTOS: <span id="score" class="stat-value">0</span></div>
             <div class="stat-box">RACHA: <span id="streak" class="stat-value">x1</span></div>
@@ -339,11 +369,14 @@
 
     <!-- START SCREEN -->
     <div id="start-screen" class="screen active">
+        <img src="logo.png" alt="Insignia IE Juan Jiménez Pimentel" class="school-logo">
         <h1>ENTRENAMIENTO CIBERNÉTICO: EL DÍPTICO</h1>
         <p class="subtitle">IE "Juan Jiménez Pimentel" | Elaboración de Dípticos de las Regiones del Perú</p>
+        
         <p style="text-align: center; margin-bottom: 20px; line-height: 1.6; color: #ccc;">
-            Demuestra tus conocimientos respondiendo <strong>35 preguntas interactiva</strong> divididas en categorías: Estructura, Pasos de Redacción, Biodiversidad de las Regiones (Costa, Sierra, Selva), Gramática y Criterios de Evaluación.
+            Demuestra tus conocimientos respondiendo <strong>35 preguntas interactivas</strong> divididas en categorías: Estructura, Pasos de Redacción, Biodiversidad de las Regiones (Costa, Sierra, Selva), Gramática y Criterios de Evaluación.
         </p>
+
         <div style="background: rgba(0, 243, 255, 0.05); border: 1px solid var(--neon-cyan); padding: 12px; border-radius: 6px; margin-bottom: 20px; font-size: 0.95rem;">
             <strong> Reglas del Módulo:</strong>
             <ul style="margin-left: 20px; margin-top: 5px; line-height: 1.5;">
@@ -373,6 +406,7 @@
 
     <!-- END / REWARD SCREEN -->
     <div id="end-screen" class="screen">
+        <img src="logo.png" alt="Insignia Colegio" class="school-logo" style="max-height: 70px;">
         <div class="reward-badge">🏆</div>
         <h1>¡EVALUACIÓN FINALIZADA!</h1>
         <p class="subtitle">Has completado las 35 preguntas del sistema de entrenamiento.</p>
