@@ -3,980 +3,613 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CYBER-DÍPTICO 2077 | IE Juan Jiménez Pimentel</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <title>Desafío Estadístico Neón Interactivo</title>
     <style>
         :root {
+            --bg-color: #0a0c14;
+            --card-bg: #121526;
             --neon-cyan: #00f3ff;
-            --neon-magenta: #ff0055;
+            --neon-magenta: #ff007f;
+            --neon-yellow: #ffee00;
             --neon-green: #00ff66;
-            --neon-yellow: #ffe600;
-            --bg-dark: #05050a;
-            --card-bg: rgba(12, 12, 24, 0.9);
+            --neon-red: #ff3333;
+            --text-color: #ffffff;
+            --text-dim: #9095b0;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            user-select: none;
-            font-family: 'Rajdhani', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: #fff;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow-x: hidden;
+            padding: 20px;
             background-image: 
-                radial-gradient(circle at 50% 50%, rgba(0, 243, 255, 0.08) 0%, transparent 75%),
-                linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
-            background-size: 100% 100%, 25px 25px, 25px 25px;
-            padding: 15px;
+                radial-gradient(circle at 15% 15%, rgba(0, 243, 255, 0.08) 0%, transparent 25%),
+                radial-gradient(circle at 85% 85%, rgba(255, 0, 127, 0.08) 0%, transparent 25%);
         }
 
-        /* Scanline FX */
-        body::after {
-            content: " ";
-            position: fixed;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
-            background-size: 100% 4px;
-            z-index: 100;
-            pointer-events: none;
-            opacity: 0.6;
-        }
-
-        .game-container {
+        .container {
             width: 100%;
-            max-width: 880px;
+            max-width: 850px;
             background: var(--card-bg);
             border: 2px solid var(--neon-cyan);
-            border-radius: 12px;
-            box-shadow: 0 0 30px rgba(0, 243, 255, 0.25), inset 0 0 15px rgba(0, 243, 255, 0.1);
+            border-radius: 16px;
             padding: 25px;
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.25);
             position: relative;
-            backdrop-filter: blur(12px);
         }
 
-        /* Estilos para la insignia / Logo */
-        .school-logo {
-            max-height: 90px;
-            width: auto;
-            filter: drop-shadow(0 0 12px var(--neon-cyan));
-            margin: 0 auto 15px;
-            display: block;
-            transition: transform 0.3s ease;
+        h1 {
+            text-align: center;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-cyan);
+            margin-bottom: 20px;
+            font-size: 2rem;
+            text-transform: uppercase;
         }
 
-        .school-logo:hover {
-            transform: scale(1.05);
-            filter: drop-shadow(0 0 18px var(--neon-yellow));
-        }
-
-        .hud-logo {
-            max-height: 38px;
-            width: auto;
-            filter: drop-shadow(0 0 6px var(--neon-cyan));
-        }
-
-        /* HUD Header */
-        .hud-header {
+        .header-status {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid var(--neon-cyan);
-            padding-bottom: 12px;
             margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 10px;
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            border: 1px solid var(--neon-magenta);
         }
 
-        .hud-brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .hud-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.1rem;
-            color: var(--neon-cyan);
-            text-shadow: 0 0 8px var(--neon-cyan);
-            letter-spacing: 1px;
-        }
-
-        .hud-stats {
-            display: flex;
-            gap: 12px;
-        }
-
-        .stat-box {
-            background: rgba(0, 243, 255, 0.08);
-            border: 1px solid var(--neon-cyan);
-            padding: 5px 12px;
-            border-radius: 6px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.85rem;
-        }
-
-        .stat-value {
-            color: var(--neon-yellow);
+        .status-item {
             font-weight: bold;
+            font-size: 1.1rem;
         }
 
-        /* Screens */
+        .status-item span {
+            color: var(--neon-yellow);
+            text-shadow: 0 0 5px var(--neon-yellow);
+        }
+
         .screen {
             display: none;
-            animation: fadeIn 0.3s ease-in-out forwards;
         }
 
         .screen.active {
             display: block;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
+        .welcome-box {
+            text-align: center;
+            padding: 20px 0;
         }
 
-        h1, h2 {
-            font-family: 'Orbitron', sans-serif;
-            text-align: center;
-            margin-bottom: 12px;
-            text-shadow: 0 0 12px var(--neon-magenta);
-            color: #fff;
-        }
-
-        p.subtitle {
-            text-align: center;
-            color: #ccc;
-            margin-bottom: 20px;
+        .welcome-box p {
+            margin-bottom: 25px;
             font-size: 1.1rem;
+            color: var(--text-dim);
         }
 
-        /* Buttons */
-        .btn-cyber {
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .btn {
             background: transparent;
+            color: var(--text-color);
             border: 2px solid var(--neon-cyan);
-            color: var(--neon-cyan);
-            padding: 12px 28px;
-            font-family: 'Orbitron', sans-serif;
+            padding: 15px 20px;
             font-size: 1rem;
             font-weight: bold;
+            border-radius: 8px;
             cursor: pointer;
-            border-radius: 4px;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             text-transform: uppercase;
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
-            display: block;
-            margin: 20px auto 0;
         }
 
-        .btn-cyber:hover {
+        .btn:hover:not(:disabled) {
             background: var(--neon-cyan);
-            color: #000;
+            color: var(--bg-color);
             box-shadow: 0 0 20px var(--neon-cyan);
-            transform: scale(1.02);
         }
 
-        /* Quiz Elements */
-        .question-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
+        .btn-easy { border-color: var(--neon-green); color: var(--neon-green); }
+        .btn-easy:hover:not(:disabled) { background: var(--neon-green); color: var(--bg-color); }
 
-        .type-badge {
-            background: rgba(255, 0, 85, 0.2);
-            border: 1px solid var(--neon-magenta);
-            color: var(--neon-magenta);
-            padding: 3px 10px;
-            border-radius: 4px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-        }
+        .btn-medium { border-color: var(--neon-yellow); color: var(--neon-yellow); }
+        .btn-medium:hover:not(:disabled) { background: var(--neon-yellow); color: var(--bg-color); }
 
+        .btn-hard { border-color: var(--neon-magenta); color: var(--neon-magenta); }
+        .btn-hard:hover:not(:disabled) { background: var(--neon-magenta); color: var(--bg-color); }
+
+        /* Preguntas y Contenido Visual */
         .question-box {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 18px;
-            background: rgba(255, 255, 255, 0.04);
-            padding: 16px;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 18px;
+            border-radius: 8px;
             border-left: 4px solid var(--neon-cyan);
-            border-radius: 4px;
-            line-height: 1.4;
         }
 
+        .question-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .chart-container {
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 243, 255, 0.2);
+        }
+
+        /* OPCIONES DE SELECCIÓN */
         .options-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: 15px;
         }
 
         .option-btn {
-            background: rgba(20, 20, 40, 0.8);
-            border: 1px solid rgba(0, 243, 255, 0.3);
-            color: #fff;
-            padding: 12px 16px;
-            border-radius: 6px;
-            font-size: 1.05rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(0, 243, 255, 0.3);
+            color: var(--text-color);
+            padding: 14px 18px;
             text-align: left;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.2s;
+            font-size: 1rem;
             position: relative;
         }
 
-        .option-btn:hover:not(.disabled) {
-            border-color: var(--neon-yellow);
-            background: rgba(255, 230, 0, 0.1);
-            transform: translateX(4px);
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--neon-cyan);
+            background: rgba(0, 243, 255, 0.1);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
         }
 
-        .option-btn.correct {
+        /* ESTADOS TRAS SELECCIONAR (BLOQUEO Y COLORES) */
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        .option-btn.correct-choice {
             border-color: var(--neon-green) !important;
             background: rgba(0, 255, 102, 0.25) !important;
             color: #fff !important;
-            box-shadow: 0 0 15px var(--neon-green);
+            box-shadow: 0 0 15px var(--neon-green) !important;
             font-weight: bold;
         }
 
-        .option-btn.wrong {
-            border-color: var(--neon-magenta) !important;
-            background: rgba(255, 0, 85, 0.25) !important;
+        .option-btn.incorrect-choice {
+            border-color: var(--neon-red) !important;
+            background: rgba(255, 51, 51, 0.25) !important;
             color: #fff !important;
-            box-shadow: 0 0 15px var(--neon-magenta);
+            box-shadow: 0 0 15px var(--neon-red) !important;
         }
 
-        /* Feedback Banner */
-        .feedback-banner {
-            margin-top: 15px;
-            padding: 12px;
-            border-radius: 6px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.95rem;
-            text-align: center;
-            display: none;
-            animation: popIn 0.3s ease;
-        }
-
-        .feedback-banner.correct {
-            display: block;
-            background: rgba(0, 255, 102, 0.2);
-            border: 1px solid var(--neon-green);
-            color: var(--neon-green);
-            box-shadow: 0 0 10px rgba(0, 255, 102, 0.3);
-        }
-
-        .feedback-banner.wrong {
-            display: block;
-            background: rgba(255, 0, 85, 0.2);
-            border: 1px solid var(--neon-magenta);
-            color: var(--neon-magenta);
-            box-shadow: 0 0 10px rgba(255, 0, 85, 0.3);
-        }
-
-        @keyframes popIn {
-            0% { transform: scale(0.95); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        /* Progress Bar */
-        .progress-container {
-            width: 100%;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            margin-bottom: 15px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
-            transition: width 0.3s ease;
-            box-shadow: 0 0 10px var(--neon-cyan);
-        }
-
-        /* Reward Screen */
-        .reward-badge {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 15px;
-            background: radial-gradient(circle, var(--neon-yellow) 0%, transparent 70%);
-            border: 3px solid var(--neon-yellow);
-            border-radius: 50%;
+        /* ENTRADA DE TEXTO (ESCRIBIR) */
+        .input-box {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2.8rem;
-            box-shadow: 0 0 30px var(--neon-yellow);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.06); }
-            100% { transform: scale(1); }
-        }
-
-        .certificate {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid var(--neon-cyan);
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            margin-top: 15px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
             gap: 10px;
             margin-top: 15px;
         }
 
-        .stat-card {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 10px;
+        .input-text {
+            flex: 1;
+            padding: 14px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--neon-cyan);
+            border-radius: 8px;
+            color: var(--neon-yellow);
+            font-size: 1.1rem;
+            outline: none;
+        }
+
+        .input-text:disabled {
+            opacity: 0.7;
+            border-color: var(--text-dim);
+        }
+
+        .feedback-msg {
+            margin-top: 15px;
+            padding: 12px;
             border-radius: 6px;
-            border: 1px solid rgba(0, 243, 255, 0.2);
+            display: none;
+            font-weight: bold;
+            font-size: 1.05rem;
+        }
+
+        .feedback-msg.correct {
+            display: block;
+            background: rgba(0, 255, 102, 0.15);
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+        }
+
+        .feedback-msg.incorrect {
+            display: block;
+            background: rgba(255, 51, 51, 0.15);
+            border: 1px solid var(--neon-red);
+            color: #ff8888;
+        }
+
+        .action-bar {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        /* GRÁFICO DE BARRAS NEÓN EN CSS */
+        .bar-chart-visual {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 180px;
+            padding-top: 25px;
+            border-bottom: 2px solid var(--neon-cyan);
+            border-left: 2px solid var(--neon-cyan);
+            gap: 10px;
+        }
+
+        .bar {
+            flex: 1;
+            background: linear-gradient(to top, var(--neon-magenta), var(--neon-cyan));
+            border-radius: 4px 4px 0 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 5px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            color: #000;
+            position: relative;
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.4);
+        }
+
+        .bar-tag {
+            position: absolute;
+            bottom: -25px;
+            font-size: 0.75rem;
+            color: var(--neon-cyan);
+            text-align: center;
+            width: 100%;
+        }
+
+        /* TABLA NEÓN */
+        .neon-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .neon-table th, .neon-table td {
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        .neon-table th {
+            background: rgba(0, 243, 255, 0.2);
+            color: var(--neon-cyan);
+        }
+
+        .final-score {
+            font-size: 3.5rem;
+            color: var(--neon-yellow);
+            text-shadow: 0 0 15px var(--neon-yellow);
+            margin: 15px 0;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
-<div class="game-container">
-    <!-- HUD -->
-    <div class="hud-header">
-        <div class="hud-brand">
-            <img src="logo.png" alt="Insignia Colegio" class="hud-logo">
-            <div class="hud-title">CYBER-DÍPTICO v3.0</div>
-        </div>
-        <div class="hud-stats">
-            <div class="stat-box">PUNTOS: <span id="score" class="stat-value">0</span></div>
-            <div class="stat-box">RACHA: <span id="streak" class="stat-value">x1</span></div>
-            <div class="stat-box">PROGRESO: <span id="q-count" class="stat-value">0/35</span></div>
-        </div>
+<div class="container">
+    <h1>Desafío Estadístico Neón</h1>
+
+    <div class="header-status">
+        <div class="status-item">Nivel: <span id="current-level">--</span></div>
+        <div class="status-item">Pregunta: <span id="q-progress">0/0</span></div>
+        <div class="status-item">Puntos: <span id="score">0</span></div>
     </div>
 
-    <!-- START SCREEN -->
-    <div id="start-screen" class="screen active">
-        <img src="logo.png" alt="Insignia IE Juan Jiménez Pimentel" class="school-logo">
-        <h1>ENTRENAMIENTO CIBERNÉTICO: EL DÍPTICO</h1>
-        <p class="subtitle">IE "Juan Jiménez Pimentel" | Elaboración de Dípticos de las Regiones del Perú</p>
-        
-        <p style="text-align: center; margin-bottom: 20px; line-height: 1.6; color: #ccc;">
-            Demuestra tus conocimientos respondiendo <strong>35 preguntas interactivas</strong> divididas en categorías: Estructura, Pasos de Redacción, Biodiversidad de las Regiones (Costa, Sierra, Selva), Gramática y Criterios de Evaluación.
-        </p>
-
-        <div style="background: rgba(0, 243, 255, 0.05); border: 1px solid var(--neon-cyan); padding: 12px; border-radius: 6px; margin-bottom: 20px; font-size: 0.95rem;">
-            <strong> Reglas del Módulo:</strong>
-            <ul style="margin-left: 20px; margin-top: 5px; line-height: 1.5;">
-                <li>Validación inmediata de respuesta correcta / incorrecta.</li>
-                <li>Avance automático obligatorio (sin retroceso).</li>
-                <li>Multiplicador de racha por respuestas acertadas consecutivas.</li>
-            </ul>
-        </div>
-        <button class="btn-cyber" onclick="startGame()">INICIAR ENTRENAMIENTO</button>
-    </div>
-
-    <!-- QUIZ STAGE -->
-    <div id="quiz-screen" class="screen">
-        <div class="progress-container">
-            <div id="progress-bar" class="progress-bar"></div>
-        </div>
-        
-        <div class="question-meta">
-            <span id="question-number" style="color: var(--neon-cyan); font-family:'Orbitron'; font-size:0.85rem;"></span>
-            <span id="question-type" class="type-badge">TIPO DE PREGUNTA</span>
-        </div>
-
-        <div id="question-text" class="question-box"></div>
-        <div id="options-container" class="options-grid"></div>
-        <div id="feedback-banner" class="feedback-banner"></div>
-    </div>
-
-    <!-- END / REWARD SCREEN -->
-    <div id="end-screen" class="screen">
-        <img src="logo.png" alt="Insignia Colegio" class="school-logo" style="max-height: 70px;">
-        <div class="reward-badge">🏆</div>
-        <h1>¡EVALUACIÓN FINALIZADA!</h1>
-        <p class="subtitle">Has completado las 35 preguntas del sistema de entrenamiento.</p>
-
-        <div class="certificate">
-            <h3 style="color: var(--neon-cyan); margin-bottom: 10px;">REPORTE DE COMPETENCIA</h3>
-            
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div style="font-size:0.8rem; color:#aaa;">PUNTAJE TOTAL</div>
-                    <div id="final-score" style="color: var(--neon-yellow); font-size: 1.4rem; font-weight: bold;">0</div>
-                </div>
-                <div class="stat-card">
-                    <div style="font-size:0.8rem; color:#aaa;">PRECISIÓN</div>
-                    <div id="final-accuracy" style="color: var(--neon-green); font-size: 1.4rem; font-weight: bold;">0%</div>
-                </div>
+    <!-- PANTALLA INICIO -->
+    <div id="screen-welcome" class="screen active">
+        <div class="welcome-box">
+            <h2>Práctica Interactiva - Matemática 4.° Grado</h2>
+            <p>Resuelve las preguntas basadas en las encuestas y gráficos del aula. Selecciona tu nivel:</p>
+            <div class="btn-grid">
+                <button class="btn btn-easy" onclick="startGame('facil')">Fácil<br><small>Lectura directa de tablas</small></button>
+                <button class="btn btn-medium" onclick="startGame('medio')">Medio<br><small>Gráficos y Porcentajes</small></button>
+                <button class="btn btn-hard" onclick="startGame('dificil')">Difícil<br><small>Problemas Operativos</small></button>
             </div>
+        </div>
+    </div>
 
-            <p style="margin-top: 15px; font-size: 1.1rem;" id="final-rank">Rango: Cargando...</p>
+    <!-- PANTALLA QUIZ -->
+    <div id="screen-quiz" class="screen">
+        <div class="question-box">
+            <div class="question-title" id="question-text">Cargando pregunta...</div>
+            <div id="visual-content"></div>
         </div>
 
-        <button class="btn-cyber" onclick="restartGame()">REINICIAR EVALUACIÓN</button>
+        <div id="interaction-area"></div>
+
+        <div id="feedback" class="feedback-msg"></div>
+
+        <div class="action-bar">
+            <button id="btn-next" class="btn" onclick="nextQuestion()" style="display: none; border-color: var(--neon-green); color: var(--neon-green);">Siguiente Pregunta ➔</button>
+        </div>
+    </div>
+
+    <!-- PANTALLA FINAL -->
+    <div id="screen-results" class="screen">
+        <div class="welcome-box">
+            <h2>¡Nivel Completado!</h2>
+            <p>Puntaje obtenido:</p>
+            <div class="final-score" id="final-score-val">0</div>
+            <button class="btn" onclick="showWelcome()">Elegir otro nivel</button>
+        </div>
     </div>
 </div>
 
 <script>
-    /* Web Audio API Sound Synthesizer */
-    class SoundController {
-        constructor() {
-            this.ctx = null;
-        }
-
-        init() {
-            if (!this.ctx) {
-                this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    // BASE DE DATOS DE PREGUNTAS (TODAS UNICAS Y DIFERENTES)
+    const questionsDatabase = {
+        facil: [
+            {
+                type: 'select',
+                text: '1. Según la tabla de la encuesta, ¿cuántos estudiantes eligieron "Ruido en las aulas y corredores"?',
+                options: ['12 estudiantes', '16 estudiantes', '14 estudiantes', '9 estudiantes'],
+                correct: 2,
+                visual: () => `
+                    <div class="chart-container">
+                        <table class="neon-table">
+                            <tr><th>Situación preocupante</th><th>Frecuencia</th></tr>
+                            <tr><td>a) Bullying o maltrato</td><td>12</td></tr>
+                            <tr><td>b) Suciedad en baños/patios</td><td>16</td></tr>
+                            <tr><td>c) Cuidado de materiales</td><td>9</td></tr>
+                            <tr style="color:var(--neon-green)"><td>d) Ruido en aulas y corredores</td><td>14</td></tr>
+                        </table>
+                    </div>`
+            },
+            {
+                type: 'select',
+                text: '2. En el gráfico de barras, ¿cuál es la barra con la altura MÁS BAJA (menos votos)?',
+                options: ['Falta de áreas verdes (e)', 'Otro (f)', 'Falta de cuidado de materiales (c)', 'Bullying (a)'],
+                correct: 1,
+                visual: () => `
+                    <div class="chart-container">
+                        <div class="bar-chart-visual">
+                            <div class="bar" style="height: 66%;">12<span class="bar-tag">a</span></div>
+                            <div class="bar" style="height: 88%;">16<span class="bar-tag">b</span></div>
+                            <div class="bar" style="height: 50%;">9<span class="bar-tag">c</span></div>
+                            <div class="bar" style="height: 77%;">14<span class="bar-tag">d</span></div>
+                            <div class="bar" style="height: 27%;">5<span class="bar-tag">e</span></div>
+                            <div class="bar" style="height: 22%; border: 2px solid var(--neon-yellow);">4<span class="bar-tag">f</span></div>
+                        </div>
+                        <p style="margin-top:30px; font-size:0.8rem; text-align:center; color:var(--text-dim)">Eje X: Opciones a, b, c, d, e, f</p>
+                    </div>`
+            },
+            {
+                type: 'input',
+                text: '3. Escribe el número total de estudiantes que respondieron la encuesta en la sección "Tabla de Resultados":',
+                correctAnswer: '40',
+                visual: () => `<div class="chart-container"><p style="color:var(--neon-cyan)">Pista: Suma total de las frecuencias del grupo de 4.º grado.</p></div>`
             }
-        }
+        ],
+        medio: [
+            {
+                type: 'select',
+                text: '1. Observa el gráfico circular. ¿Qué porcentaje corresponde a la "Suciedad en los baños y patios" (Opción B)?',
+                options: ['30%', '25%', '15%', '12,5%'],
+                correct: 1,
+                visual: () => `
+                    <div class="chart-container" style="text-align:center">
+                        <p style="color:var(--neon-yellow); margin-bottom:10px;">Distribución porcentual:</p>
+                        <p>a) Bullying: 30% | <b style="color:var(--neon-green)">b) Suciedad: 25%</b> | c) Materiales: 22,5%</p>
+                        <p>d) Ruido: 15% | e) Áreas verdes: 12,5% | f) Otro: 10%</p>
+                    </div>`
+            },
+            {
+                type: 'input',
+                text: '2. Escribe la diferencia exacta: ¿Cuántos alumnos más prefieren resolver "Bullying" (12) que "Falta de áreas verdes" (5)?',
+                correctAnswer: '7',
+                visual: () => `<div class="chart-container"><p style="color:var(--neon-magenta)">Resta la frecuencia de (a) menos la frecuencia de (e): 12 - 5 = ?</p></div>`
+            },
+            {
+                type: 'select',
+                text: '3. En estadística, la "Moda" es el valor que tiene la mayor frecuencia. ¿Cuál es la Moda de este conjunto de datos?',
+                options: ['Ruido en el aula (14)', 'Suciedad en baños y patios (16)', 'Bullying o maltrato (12)', 'Falta de materiales (9)'],
+                correct: 1
+            }
+        ],
+        dificil: [
+            {
+                type: 'input',
+                text: '1. Se comprarán 1 248 plantitas y 2 375 bolsas de tierra para los patios. ¿Cuántos materiales se comprarán en total?',
+                correctAnswer: '3623',
+                visual: () => `<div class="chart-container"><p style="color:var(--neon-cyan)">Resuelve la adición: 1248 + 2375</p></div>`
+            },
+            {
+                type: 'input',
+                text: '2. De los 1 356 estudiantes del colegio, 782 participaron en la encuesta. ¿Cuántos NO participaron?',
+                correctAnswer: '574',
+                visual: () => `<div class="chart-container"><p style="color:var(--neon-magenta)">Resuelve la sustracción: 1356 - 782</p></div>`
+            },
+            {
+                type: 'input',
+                text: '3. Si la escuela desea comprar 3 480 libros a S/ 27 cada uno, ¿cuánto dinero en soles necesitará en total?',
+                correctAnswer: '93960',
+                visual: () => `<div class="chart-container"><p style="color:var(--neon-yellow)">Resuelve la multiplicación: 3480 × 27</p></div>`
+            }
+        ]
+    };
 
-        playCorrect() {
-            this.init();
-            const now = this.ctx.currentTime;
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
+    let currentQuestions = [];
+    let qIndex = 0;
+    let score = 0;
+    let answered = false;
 
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(523.25, now); // C5
-            osc.frequency.exponentialRampToValueAtTime(880, now + 0.15); // A5
-
-            gain.gain.setValueAtTime(0.2, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
-
-            osc.connect(gain);
-            gain.connect(this.ctx.destination);
-
-            osc.start(now);
-            osc.stop(now + 0.15);
-        }
-
-        playWrong() {
-            this.init();
-            const now = this.ctx.currentTime;
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(220, now); // A3
-            osc.frequency.exponentialRampToValueAtTime(110, now + 0.25); // A2
-
-            gain.gain.setValueAtTime(0.2, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-
-            osc.connect(gain);
-            gain.connect(this.ctx.destination);
-
-            osc.start(now);
-            osc.stop(now + 0.25);
-        }
-
-        playWin() {
-            this.init();
-            const notes = [440, 554.37, 659.25, 880];
-            notes.forEach((freq, index) => {
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                const now = this.ctx.currentTime + index * 0.12;
-
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(freq, now);
-
-                gain.gain.setValueAtTime(0.2, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
-
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-
-                osc.start(now);
-                osc.stop(now + 0.2);
-            });
-        }
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
     }
 
-    const sounds = new SoundController();
+    function showWelcome() {
+        showScreen('screen-welcome');
+        document.getElementById('current-level').innerText = '--';
+        document.getElementById('q-progress').innerText = '0/0';
+        document.getElementById('score').innerText = '0';
+    }
 
-    /* Complete 35 Questions Database */
-    const questions = [
-        // ESTRUCTURA DEL DÍPTICO
-        {
-            type: "Estructura del Díptico",
-            q: "1. ¿Qué es un díptico informativo?",
-            options: [
-                "Un afiche grande impreso en una sola cara.",
-                "Un texto informativo en una hoja doblada por la mitad (4 caras).",
-                "Un libro de cuentos ilustrados de tres capítulos.",
-                "Una carta formal enviada a una institución."
-            ],
-            correct: 1
-        },
-        {
-            type: "Verdadero o Falso",
-            q: "2. Al doblar la hoja por la mitad para formar un díptico, se obtienen exactamente 4 caras organizadas.",
-            options: ["Verdadero", "Falso"],
-            correct: 0
-        },
-        {
-            type: "Estructura del Díptico",
-            q: "3. ¿Cuál es el propósito principal de un díptico informativo?",
-            options: [
-                "Informar sobre un tema de forma breve, clara y atractiva.",
-                "Vender productos a precios elevados.",
-                "Contar una historia de ficción larga.",
-                "Escribir poemas sin incluir imágenes."
-            ],
-            correct: 0
-        },
-        {
-            type: "Estructura del Díptico",
-            q: "4. ¿Qué elementos indispensables debe incluir la CARA 1 (Portada)?",
-            options: [
-                "Conclusiones y bibliografía.",
-                "Recomendaciones ambientales y fuentes.",
-                "Título atractivo, imagen principal y nombre del autor.",
-                "Flora, fauna, clima y costumbres detalladas."
-            ],
-            correct: 2
-        },
-        {
-            type: "Estructura del Díptico",
-            q: "5. ¿En qué cara del díptico se presenta la ubicación general y la introducción a la región?",
-            options: ["Cara 1: Portada", "Cara 2: Presentación", "Cara 3: Información Principal", "Cara 4: Contraportada"],
-            correct: 1
-        },
-        {
-            type: "Estructura del Díptico",
-            q: "6. ¿Qué datos se organizan principalmente en la CARA 3 (Información Principal)?",
-            options: [
-                "Mensaje final y fuentes consultadas.",
-                "Título del trabajo y nombre del colegio.",
-                "Paisajes, clima, flora, fauna y costumbres de la región.",
-                "Recomendaciones de cuidado ambiental."
-            ],
-            correct: 2
-        },
-        {
-            type: "Estructura del Díptico",
-            q: "7. ¿En qué cara se colocan las recomendaciones para proteger la región y las fuentes consultadas?",
-            options: ["Cara 1 (Portada)", "Cara 2 (Presentación)", "Cara 3 (Información)", "Cara 4 (Contraportada)"],
-            correct: 3
-        },
-
-        // PROCESO DE REDACCIÓN / PASOS
-        {
-            type: "Proceso de Redacción",
-            q: "8. ¿Cuál es el primer paso metodológico para elaborar un díptico?",
-            options: ["Textualización", "Planificación", "Edición", "Revisión"],
-            correct: 1
-        },
-        {
-            type: "Proceso de Redacción",
-            q: "9. ¿En qué consiste la etapa de PLANIFICACIÓN?",
-            options: [
-                "Escribir el primer borrador directamente.",
-                "Definir el tema, propósito, destinatario e información a incluir.",
-                "Corregir la ortografía y las tildes.",
-                "Entregar el producto final al docente."
-            ],
-            correct: 1
-        },
-        {
-            type: "Proceso de Redacción",
-            q: "10. ¿Qué se realiza durante la etapa de TEXTUALIZACIÓN?",
-            options: [
-                "Buscar imágenes únicamente.",
-                "Escribir el primer borrador organizando la información en las 4 caras.",
-                "Evaluar con una lista de cotejo si está bien hecho.",
-                "Seleccionar el tipo de papel impreso."
-            ],
-            correct: 1
-        },
-        {
-            type: "Proceso de Redacción",
-            q: "11. ¿Cuál es el objetivo principal de la fase de REVISIÓN?",
-            options: [
-                "Dibujar la portada.",
-                "Comprobar claridad, coherencia, ortografía e imágenes antes de publicar.",
-                "Escribir el título en tamaño grande.",
-                "Elegir el tema de la región natural."
-            ],
-            correct: 1
-        },
-        {
-            type: "Proceso de Redacción",
-            q: "12. ¿Qué se hace en la fase final de EDICIÓN?",
-            options: [
-                "Preparar la versión final limpia y atractiva para su presentación.",
-                "Borrar todo el borrador y volver a planificar.",
-                "Definir a quién va dirigido el trabajo.",
-                "Cambiar la región elegida por otra."
-            ],
-            correct: 0
-        },
-
-        // REGIONES NATURALES DEL PERÚ (COSTA, SIERRA, SELVA)
-        {
-            type: "Regiones Naturales",
-            q: "13. ¿Qué paisajes y relieves caracterizan a la región COSTA del Perú?",
-            options: [
-                "Grandes cordilleras y mesetas heladas.",
-                "Playas, desiertos y valles.",
-                "Bosques tropicales densos y ríos caudalosos.",
-                "Volcanes y picos nevados."
-            ],
-            correct: 1
-        },
-        {
-            type: "Regiones Naturales",
-            q: "14. ¿Qué fauna representa a la región COSTA según la ficha informativa?",
-            options: [
-                "Lobo marino, pelícano y especies marinas.",
-                "Vicuña, cóndor y puma.",
-                "Jaguar, delfín rosado y guacamayo.",
-                "Oso de anteojos y llama."
-            ],
-            correct: 0
-        },
-        {
-            type: "Regiones Naturales",
-            q: "15. ¿Qué flora es característica de la región COSTA?",
-            options: ["Orquídea y aguaje", "Algarrobo y totora", "Ichu y queñua", "Eucalipto y pino"],
-            correct: 1
-        },
-        {
-            type: "Regiones Naturales",
-            q: "16. ¿Qué relieve predomina en la región SIERRA?",
-            options: [
-                "Playas y dunas de arena.",
-                "Montañas, valles interandinos y mesetas.",
-                "Bosques húmedos y selva baja.",
-                "Manglares costeros."
-            ],
-            correct: 1
-        },
-        {
-            type: "Regiones Naturales",
-            q: "17. ¿Qué especies destacan en la fauna típica de la SIERRA?",
-            options: [
-                "Lobo marino y pelícano",
-                "Vicuña y cóndor",
-                "Delfín rosado y jaguar",
-                "Caimán y guacamayo"
-            ],
-            correct: 1
-        },
-        {
-            type: "Regiones Naturales",
-            q: "18. ¿Qué plantas son emblemáticas de la región SIERRA?",
-            options: ["Ichu y queñua", "Algarrobo y totora", "Orquídea y aguaje", "Mangle y cedro"],
-            correct: 0
-        },
-        {
-            type: "Regiones Naturales",
-            q: "19. ¿Cómo se caracteriza el clima y paisaje representativo de la SELVA?",
-            options: [
-                "Clima frío y seco con mesetas.",
-                "Clima cálido y lluvioso con densos bosques y ríos.",
-                "Clima árido y templado con playas.",
-                "Clima gélido con nieve permanente."
-            ],
-            correct: 1
-        },
-        {
-            type: "Regiones Naturales",
-            q: "20. ¿Qué especies representan a la fauna de la SELVA peruana?",
-            options: [
-                "Jaguar y delfín rosado",
-                "Lobo marino y pelícano",
-                "Vicuña y cóndor",
-                "Caballo y oveja"
-            ],
-            correct: 0
-        },
-        {
-            type: "Regiones Naturales",
-            q: "21. ¿Qué plantas destacan en la gran biodiversidad de la SELVA?",
-            options: ["Algarrobo y totora", "Ichu y queñua", "Orquídeas y aguaje", "Cactus y matorrales"],
-            correct: 2
-        },
-
-        // VERDADERO O FALSO
-        {
-            type: "Verdadero o Falso",
-            q: "22. El aguaje y la orquídea son plantas nativas de la Costa peruana.",
-            options: ["Verdadero", "Falso"],
-            correct: 1
-        },
-        {
-            type: "Verdadero o Falso",
-            q: "23. El uso de títulos y subtítulos ayuda a estructurar y ordenar la información en un díptico.",
-            options: ["Verdadero", "Falso"],
-            correct: 0
-        },
-        {
-            type: "Verdadero o Falso",
-            q: "24. En un díptico no es necesario revisar las mayúsculas ni las tildes antes de editarlo.",
-            options: ["Verdadero", "Falso"],
-            correct: 1
-        },
-        {
-            type: "Verdadero o Falso",
-            q: "25. La vicuña y el cóndor son especies de la fauna silvestre de la Sierra.",
-            options: ["Verdadero", "Falso"],
-            correct: 0
-        },
-        {
-            type: "Verdadero o Falso",
-            q: "26. Las imágenes que se colocan en el díptico deben relacionarse directamente con el texto.",
-            options: ["Verdadero", "Falso"],
-            correct: 0
-        },
-
-        // GRAMÁTICA Y REDACCIÓN
-        {
-            type: "Gramática y Redacción",
-            q: "27. ¿Cómo se debe corregir para evitar repeticiones: 'La Sierra tiene montañas. La Sierra tiene animales como la vicuña'?",
-            options: [
-                "La Sierra tiene montañas y animales como la vicuña.",
-                "La Sierra montañas vicuña tiene animales.",
-                "La Sierra tiene montañas porque La Sierra tiene vicuñas.",
-                "Tiene montañas La Sierra y vicuña animales."
-            ],
-            correct: 0
-        },
-        {
-            type: "Gramática y Redacción",
-            q: "28. ¿Cuál es la forma correcta de unir: 'La Costa posee playas. Debemos evitar contaminar sus playas'?",
-            options: [
-                "La Costa posee playas, por ello debemos evitar contaminarlas.",
-                "La Costa posee playas playas debemos contaminar no.",
-                "La Costa posee playas pero La Costa posee playas sin contaminar.",
-                "Evitar contaminar playas porque La Costa playas."
-            ],
-            correct: 0
-        },
-        {
-            type: "Gramática y Redacción",
-            q: "29. En la redacción del texto, ¿para qué se utilizan los conectores lógicos?",
-            options: [
-                "Para hacer el texto más largo sin sentido.",
-                "Para evitar repeticiones innecesarias y dar fluidez y coherencia a las ideas.",
-                "Para cambiar el título del trabajo a mitad de camino.",
-                "Para reemplazar las imágenes del díptico."
-            ],
-            correct: 1
-        },
-
-        // CRITERIOS DE REVISIÓN Y EVALUACIÓN
-        {
-            type: "Criterios de Evaluación",
-            q: "30. ¿Qué pregunta responde a la fase de planificación según las fichas de trabajo?",
-            options: [
-                "¿A qué hora saldré a recreo?",
-                "¿Para qué se escribirá el díptico y quiénes lo leerán?",
-                "¿Cuántas páginas tiene un libro de texto?",
-                "¿Qué color de lapicero prefiere el profesor?"
-            ],
-            correct: 1
-        },
-        {
-            type: "Criterios de Evaluación",
-            q: "31. Un criterio fundamental en la lista de revisión del díptico es comprobar que...",
-            options: [
-                "Tenga más de 20 páginas de extensión.",
-                "La información esté distribuida de manera clara y ordenada en cuatro caras.",
-                "No incluya ningún título ni subtítulo.",
-                "Solo contenga fotografías sin texto."
-            ],
-            correct: 1
-        },
-        {
-            type: "Criterios de Evaluación",
-            q: "32. ¿Por qué es importante mencionar las 'Fuentes consultadas' en la contraportada?",
-            options: [
-                "Para que la hoja se vea con más colores.",
-                "Para darle credibilidad, veracidad y sustento a la información investigada.",
-                "Porque es obligatorio escribir nombres inventados.",
-                "Para llenar espacio sobrante en la portada."
-            ],
-            correct: 1
-        },
-        {
-            type: "Criterios de Evaluación",
-            q: "33. Si vas a elaborar un díptico sobre la SELVA, ¿cuál de estos títulos es el más atractivo e idóneo?",
-            options: [
-                "El Desierto Costero del Perú",
-                "La Majestuosidad de las Cumbres Andinas",
-                "El Pulmón del Mundo: Biodiversidad y Riqueza de la Selva Peruana",
-                "Las Playas y Valles del Norte"
-            ],
-            correct: 2
-        },
-        {
-            type: "Criterios de Evaluación",
-            q: "34. ¿Qué acciones deben promoverse en la CARA 4 (Contraportada) del díptico?",
-            options: [
-                "Acciones y recomendaciones concretas para proteger y cuidar la región elegida.",
-                "Recetas de cocina internacional.",
-                "Reglas de juegos deportivos.",
-                "Listado de colegios de la ciudad."
-            ],
-            correct: 0
-        },
-        {
-            type: "Criterios de Evaluación",
-            q: "35. En la sección final de autoevaluación, ¿qué significa 'Reflexionar sobre lo aprendido'?",
-            options: [
-                "Identificar qué parte quedó mejor elaborada y qué aspectos se deben mejorar.",
-                "Copiar el trabajo de un compañero de aula.",
-                "Memorizar todo el texto sin comprenderlo.",
-                "Ponerle una nota al profesor."
-            ],
-            correct: 0
-        }
-    ];
-
-    /* Game State */
-    let currentQuestionIndex = 0;
-    let score = 0;
-    let streak = 1;
-    let correctAnswersCount = 0;
-    let isProcessing = false;
-
-    function startGame() {
-        sounds.init();
-        currentQuestionIndex = 0;
+    function startGame(level) {
+        currentQuestions = [...questionsDatabase[level]];
+        qIndex = 0;
         score = 0;
-        streak = 1;
-        correctAnswersCount = 0;
-        updateHUD();
-        switchScreen('quiz-screen');
+        document.getElementById('current-level').innerText = level.toUpperCase();
+        document.getElementById('score').innerText = score;
+        showScreen('screen-quiz');
         loadQuestion();
     }
 
-    function updateHUD() {
-        document.getElementById('score').textContent = score;
-        document.getElementById('streak').textContent = `x${streak}`;
-        document.getElementById('q-count').textContent = `${currentQuestionIndex}/${questions.length}`;
-    }
-
-    function switchScreen(screenId) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(screenId).classList.add('active');
-    }
-
     function loadQuestion() {
-        isProcessing = false;
-        const q = questions[currentQuestionIndex];
+        answered = false;
+        const q = currentQuestions[qIndex];
         
-        // Update Progress Bar
-        const progress = ((currentQuestionIndex) / questions.length) * 100;
-        document.getElementById('progress-bar').style.width = `${progress}%`;
+        document.getElementById('q-progress').innerText = `${qIndex + 1}/${currentQuestions.length}`;
+        document.getElementById('question-text').innerText = q.text;
+        document.getElementById('btn-next').style.display = 'none';
+        
+        const feedback = document.getElementById('feedback');
+        feedback.className = 'feedback-msg';
+        feedback.style.display = 'none';
 
-        // Update Text & Meta
-        document.getElementById('question-number').textContent = `PREGUNTA ${currentQuestionIndex + 1} DE ${questions.length}`;
-        document.getElementById('question-type').textContent = q.type;
-        document.getElementById('question-text').textContent = q.q;
+        // Render visual
+        const visualArea = document.getElementById('visual-content');
+        visualArea.innerHTML = q.visual ? q.visual() : '';
 
-        // Reset Feedback Banner
-        const feedbackBanner = document.getElementById('feedback-banner');
-        feedbackBanner.className = 'feedback-banner';
-        feedbackBanner.textContent = '';
+        // Render interacción
+        const container = document.getElementById('interaction-area');
+        container.innerHTML = '';
 
-        // Options Grid
-        const optionsContainer = document.getElementById('options-container');
-        optionsContainer.innerHTML = '';
+        if (q.type === 'select') {
+            const grid = document.createElement('div');
+            grid.className = 'options-grid';
 
-        q.options.forEach((opt, idx) => {
-            const btn = document.createElement('button');
-            btn.className = 'option-btn';
-            btn.textContent = `${String.fromCharCode(65 + idx)}) ${opt}`;
-            btn.onclick = () => handleAnswer(idx, btn);
-            optionsContainer.appendChild(btn);
-        });
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => handleSelectAnswer(idx);
+                grid.appendChild(btn);
+            });
+            container.appendChild(grid);
+        } else if (q.type === 'input') {
+            const box = document.createElement('div');
+            box.className = 'input-box';
 
-        updateHUD();
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.id = 'user-input';
+            input.className = 'input-text';
+            input.placeholder = 'Escribe tu número aquí...';
+
+            const sendBtn = document.createElement('button');
+            sendBtn.className = 'btn';
+            sendBtn.innerText = 'Enviar';
+            sendBtn.onclick = () => handleInputAnswer();
+
+            box.appendChild(input);
+            box.appendChild(sendBtn);
+            container.appendChild(box);
+        }
     }
 
-    function handleAnswer(selectedIndex, selectedBtn) {
-        if (isProcessing) return;
-        isProcessing = true;
+    // MANEJO DE SELECCIÓNÚNICA E INMEDIATA
+    function handleSelectAnswer(chosenIdx) {
+        if (answered) return; // Bloqueo para impedir volver a responder
+        answered = true;
 
-        const q = questions[currentQuestionIndex];
+        const q = currentQuestions[qIndex];
         const buttons = document.querySelectorAll('.option-btn');
-        const feedbackBanner = document.getElementById('feedback-banner');
+        const feedback = document.getElementById('feedback');
 
-        // Disable all buttons to prevent double clicking
-        buttons.forEach(btn => btn.classList.add('disabled'));
+        // Deshabilitar todos los botones para que no se pueda cambiar
+        buttons.forEach(btn => btn.disabled = true);
 
-        if (selectedIndex === q.correct) {
-            sounds.playCorrect();
-            selectedBtn.classList.add('correct');
-            
-            const pointsGained = 100 * streak;
-            score += pointsGained;
-            correctAnswersCount++;
-            streak++;
-
-            feedbackBanner.textContent = `✓ ¡RESPUESTA CORRECTA! (+${pointsGained} PTS)`;
-            feedbackBanner.classList.add('correct');
+        if (chosenIdx === q.correct) {
+            score += 100;
+            document.getElementById('score').innerText = score;
+            buttons[chosenIdx].classList.add('correct-choice');
+            feedback.innerText = '¡CORRECTO! Excelente elección.';
+            feedback.className = 'feedback-msg correct';
         } else {
-            sounds.playWrong();
-            selectedBtn.classList.add('wrong');
-            buttons[q.correct].classList.add('correct'); // Show correct answer
-            streak = 1; // Reset streak
-
-            const correctText = q.options[q.correct];
-            feedbackBanner.textContent = `✗ ¡INCORRECTO! La respuesta correcta era: ${correctText}`;
-            feedbackBanner.classList.add('wrong');
+            buttons[chosenIdx].classList.add('incorrect-choice');
+            buttons[q.correct].classList.add('correct-choice'); // Mostrar cuál era la correcta
+            feedback.innerText = `INCORRECTO. La respuesta correcta era: "${q.options[q.correct]}"`;
+            feedback.className = 'feedback-msg incorrect';
         }
 
-        updateHUD();
-
-        // Auto-advance strictly forward
-        setTimeout(() => {
-            currentQuestionIndex++;
-            if (currentQuestionIndex < questions.length) {
-                loadQuestion();
-            } else {
-                finishGame();
-            }
-        }, 1800);
+        document.getElementById('btn-next').style.display = 'block';
     }
 
-    function finishGame() {
-        sounds.playWin();
-        switchScreen('end-screen');
+    // MANEJO DE ENTRADA DE TEXTO
+    function handleInputAnswer() {
+        if (answered) return;
+        
+        const inputEl = document.getElementById('user-input');
+        const val = inputEl.value.trim().replace(/[\s,.]/g, '');
+        
+        if (!val) {
+            alert('Por favor escribe tu respuesta.');
+            return;
+        }
 
-        const accuracy = Math.round((correctAnswersCount / questions.length) * 100);
-        document.getElementById('final-score').textContent = score;
-        document.getElementById('final-accuracy').textContent = `${accuracy}%`;
+        answered = true;
+        inputEl.disabled = true;
 
-        let rank = "Agente Recluta";
-        if (accuracy >= 90) rank = "🥇 MAESTRO CIBERNÉTICO DEL DÍPTICO";
-        else if (accuracy >= 75) rank = "🥈 ESPECIALISTA EN REGIONES";
-        else if (accuracy >= 55) rank = "🥉 EXPLORADOR DE CONTENIDOS";
+        const q = currentQuestions[qIndex];
+        const feedback = document.getElementById('feedback');
 
-        document.getElementById('final-rank').textContent = `Rango obtenido: ${rank}`;
+        if (val.toLowerCase() === q.correctAnswer.toLowerCase()) {
+            score += 100;
+            document.getElementById('score').innerText = score;
+            inputEl.style.borderColor = 'var(--neon-green)';
+            feedback.innerText = '¡CORRECTO! El cálculo es exacto.';
+            feedback.className = 'feedback-msg correct';
+        } else {
+            inputEl.style.borderColor = 'var(--neon-red)';
+            feedback.innerText = `INCORRECTO. La respuesta correcta era: ${q.correctAnswer}`;
+            feedback.className = 'feedback-msg incorrect';
+        }
+
+        document.getElementById('btn-next').style.display = 'block';
     }
 
-    function restartGame() {
-        startGame();
+    function nextQuestion() {
+        qIndex++;
+        if (qIndex < currentQuestions.length) {
+            loadQuestion();
+        } else {
+            showScreen('screen-results');
+            document.getElementById('final-score-val').innerText = score;
+        }
     }
 </script>
+
 </body>
 </html>
